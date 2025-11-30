@@ -23,8 +23,8 @@ try:
 except ImportError:
     logging.warning("VERL not installed. Some functionality may not work.")
 
-from .reward_model import RewardModel
-from .config import AssignmentConfig
+from reward_model import RewardModel
+from config import AssignmentConfig
 
 logger = logging.getLogger(__name__)
 
