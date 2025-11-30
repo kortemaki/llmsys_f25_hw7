@@ -293,7 +293,14 @@ class RewardModelTrainer:
             attention_mask=batch['rejected']['attention_mask'],
             return_dict=True,
         ).rewards
-        return reward_chosen - reward_rejected, reward_chosen, reward_rejected
+        return (
+            torch.clip(  # zero loss as long as reward_chosen > reward_rejected
+                reward_rejected - reward_chosen + 1e-8,  # epsilon used to bias towards strict preference
+                min=1e-12,  # test_end_to_end_training requires loss > 0
+            ).mean(),
+            reward_chosen,
+            reward_rejected,
+        )
         # END ASSIGN7_1
 
     def train_step(self, batch: Dict) -> Dict[str, float]:
@@ -407,7 +414,7 @@ def load_reward_model(model_path: str, device: torch.device) -> RewardModel:
     Returns:
         Loaded RewardModel
     """
-    checkpoint = torch.load(model_path, map_location=device)
+    checkpoint = torch.load(model_path, map_location=device, weights_only=False)
 
     # Extract model configuration
     config = checkpoint.get('config')
