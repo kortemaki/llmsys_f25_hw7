@@ -1,0 +1,4 @@
+system:
+  reward_model_dir: /ocean/projects/cis250159p/kmaki/HW7
+  rlhf_model_dir: /ocean/projects/cis250159p/kmaki/HW7/problem2/output
+  logs_dir: /ocean/projects/cis250159p/kmaki/HW7/problem2/logs
