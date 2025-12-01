@@ -17,6 +17,7 @@ from transformers import (
 
 try:
     from verl.trainer import PPOTrainer
+    #from verl.models import PolicyModel, ValueModel
     from verl.utils import rollout_generator
     from verl.config import PPOConfig
 except ImportError:
@@ -533,7 +534,7 @@ class VERLTrainer:
             # 4. Compute entropy bonus from policy logits
             ratio = nn.functional.exp(new_log_probs - rollout_batch.old_log_probs)
             surr1 = ratio * rollout_batch.advantages
-            surr2 = nn.functional.clip(
+            surr2 = torch.clip(
                 ratio,
                 min=(1 - self.config.verl.ppo_clip_eps),
                 max=(1 + self.config.verl.ppo_clip_eps),
