@@ -15,8 +15,8 @@ from transformers import (
     PreTrainedModel
 )
 
-from src.reward_model import RewardModel
-from src.config import AssignmentConfig
+from reward_model import RewardModel
+from config import AssignmentConfig
 
 logger = logging.getLogger(__name__)
 
