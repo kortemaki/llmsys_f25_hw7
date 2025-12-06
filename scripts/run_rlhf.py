@@ -6,6 +6,7 @@ This script loads a trained reward model and runs PPO training on a language mod
 
 import os
 import sys
+import math
 import argparse
 import torch
 import time
@@ -149,7 +150,7 @@ def run_rlhf_training(config: AssignmentConfig):
             'reward_std': 0.0
         }
 
-        num_batches = len(train_prompts) // config.verl.rollout_batch_size
+        num_batches = math.ceil(len(train_prompts) / config.verl.rollout_batch_size)
 
         # Create progress bar for epoch
         epoch_progress = tqdm(range(num_batches), desc=f"Epoch {epoch + 1}")
