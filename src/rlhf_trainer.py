@@ -748,7 +748,7 @@ def evaluate_policy(
         pbar = tqdm(eval_prompts, desc="Evaluating Policy", unit="prompt")
         for prompt in pbar:
             # Generate multiple samples per prompt
-            responses,_, _, _, _ = trainer.policy.generate(
+            responses, *_ = trainer.policy.generate(
                 prompts=[prompt] * num_samples,
                 max_length=trainer.config.verl.rollout_max_length,
                 temperature=trainer.config.verl.rollout_temperature,
