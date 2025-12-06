@@ -199,8 +199,9 @@ def run_rlhf_training(config: AssignmentConfig):
 
                 logger.info(f"Step {total_steps}:")
                 logger.info(f"  Policy Loss: {step_metrics.policy_loss:.4f}")
-                logger.info(f"  Value Loss: {step_metrics.value_loss:.4f}")
-                logger.info(f"  Reward Mean: {step_metrics.reward_mean:.4f}")
+                logger.info(f"  Value Loss: {step_metrics.value_loss:.8f}")
+                logger.info(f"  Reward Mean: {step_metrics.reward_mean:.16f}")
+                logger.info(f"  Reward Max: {step_metrics.reward_max}")
                 logger.info(f"  KL Divergence: {step_metrics.kl_divergence:.4f}")
 
             if (batch_idx + 1) % config.system.eval_steps == 0:

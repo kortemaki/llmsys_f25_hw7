@@ -4,3 +4,4 @@ system:
   logs_dir: /ocean/projects/cis250159p/kmaki/HW7/problem2/logs
 verl:
   reward_normalize: False
+  ppo_target_kl: 0.1
