@@ -481,14 +481,14 @@ class VERLTrainer:
             #    - surr2 = clipped_ratio * advantages (clip ratio between 1-eps and 1+eps)
             # 3. Policy loss = -min(surr1, surr2).mean()
             # 4. Compute entropy bonus from policy logits
-            ratio = nn.functional.exp(new_log_probs - rollout_batch.old_log_probs)
+            ratio = torch.exp(new_log_probs - rollout_batch.old_log_probs)
             surr1 = ratio * rollout_batch.advantages
             surr2 = torch.clip(
                 ratio,
                 min=(1 - self.config.verl.ppo_clip_eps),
                 max=(1 + self.config.verl.ppo_clip_eps),
             ) * rollout_batch.advantages
-            policy_loss = -nn.functional.min(surr1, surr2).mean()
+            policy_loss = -torch.min(surr1, surr2).mean()
             entropy = self._compute_entropy(policy_outputs.logits)
             # END ASSIGN7_2_2
 
