@@ -421,10 +421,10 @@ class VERLTrainer:
         # 3. Normalize advantages: (advantages - mean) / (std + 1e-8)
         returns = rewards + self.config.training.ppo_gamma * values
         advantages = returns - values
-        advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
+        advantages_norm = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
         # END ASSIGN7_2_1
 
-        return advantages, returns
+        return advantages_norm, returns
 
     def train_step(self, rollout_batch: RolloutBatch) -> TrainingMetrics:
         """
@@ -481,7 +481,7 @@ class VERLTrainer:
             #    - surr2 = clipped_ratio * advantages (clip ratio between 1-eps and 1+eps)
             # 3. Policy loss = -min(surr1, surr2).mean()
             # 4. Compute entropy bonus from policy logits
-            ratio = torch.exp(new_log_probs - rollout_batch.old_log_probs)
+            ratio = torch.exp(new_log_probs - rollout_batch.log_probs)
             surr1 = ratio * rollout_batch.advantages
             surr2 = torch.clip(
                 ratio,
@@ -489,7 +489,7 @@ class VERLTrainer:
                 max=(1 + self.config.verl.ppo_clip_eps),
             ) * rollout_batch.advantages
             policy_loss = -torch.min(surr1, surr2).mean()
-            entropy = self._compute_entropy(policy_outputs.logits)
+            entropy = torch.mean(self._compute_entropy(policy_outputs.logits))
             # END ASSIGN7_2_2
 
             # Total policy loss with entropy bonus
