@@ -472,15 +472,18 @@ class VERLTrainer:
         #   - Compute advantage for each token as: advantage[i] = returns[i] - value[i].
         # Only compute these where the attention_mask is 1 (i.e., for valid tokens, not padding).
         # END ASSIGN7_2_1
-        value_ext = torch.zeros(values.shape)
-        value_ext[..., :-1] = values[..., 1:]
+        rewards_ext = torch.zeros(values.shape, device=rewards.device)
+        rewards_ext[..., -1] = rewards
 
-        returns = rewards + self.config.training.ppo_gamma * value_ext
-        advantages = returns - values, attention_mask
+        values_ext = torch.zeros(values.shape, device=values.device)
+        values_ext[..., :-1] = values[..., 1:]
+
+        returns = rewards_ext + self.config.training.ppo_gamma * values_ext
+        advantages = returns - values
         advantages_norm = (
-            advantages - torch.masked_select(advantages, attention_mask).mean()
+            advantages - torch.masked_select(advantages, attention_mask.bool()).mean()
         ) / (
-            torch.masked_select(advantages, attention_mask).std() + 1e-8
+            torch.masked_select(advantages, attention_mask.bool()).std() + 1e-8
         )
 
         # END ASSIGN7_2_1
