@@ -297,14 +297,10 @@ class RewardModelTrainer:
             return_dict=True,
         ).rewards
         return (
-            torch.clip(  # zero loss as long as reward_chosen > reward_rejected
-                reward_rejected - reward_chosen + 1e-8,  # epsilon used to bias towards strict preference
-                min=1e-12,  # test_end_to_end_training requires loss > 0
-            ).mean(),
+            self.loss_fn(reward_chosen, reward_rejected, torch.ones(reward_chosen.shape, device=reward_chosen.device)),
             reward_chosen,
             reward_rejected,
-        )
-        # END ASSIGN7_1
+        )        # END ASSIGN7_1
 
     def train_step(self, batch: Dict) -> Dict[str, float]:
         """
