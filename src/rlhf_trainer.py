@@ -47,7 +47,6 @@ class TrainingMetrics:
     kl_divergence: float
     reward_mean: float
     reward_std: float
-    reward_max: float
     advantage_mean: float
     advantage_std: float
 
@@ -617,7 +616,6 @@ class VERLTrainer:
             kl_divergence=total_kl / num_epochs,
             reward_mean=rollout_batch.rewards.mean().item(),
             reward_std=rollout_batch.rewards.std().item(),
-            reward_max=rollout_batch.rewards.max().item(),
             advantage_mean=rollout_batch.advantages.mean().item(),
             advantage_std=rollout_batch.advantages.std().item()
         )
